@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Public Notice Ad Request</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <h1>Public Notice — Ad Request</h1>
+  <div class="sub">Fill in the details below to get the rate and a draft artwork.</div>
+  <div class="status" id="sheetStatus" style="margin-bottom:14px;"></div>
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px;">
+    <button class="btn secondary" id="refreshBtn">Refresh Rates from Sheet</button>
+    <button class="btn-icon" id="clearBtn" title="Clear Form" aria-label="Clear Form">🗑</button>
+  </div>
+
+  <div class="card" id="formCard">
+    <label>City</label>
+    <div class="dropdown">
+      <input type="text" id="cityInput" placeholder="Type or select a city..." autocomplete="off">
+      <div class="dropdown-list" id="cityList"></div>
+    </div>
+
+    <label>Publication</label>
+    <select id="pubSelect"><option value="">Select city first</option></select>
+
+    <label>Category</label>
+    <select id="catSelect">
+      <option value="">Select category</option>
+      <option value="Public Notice">Public Notice</option>
+      <option value="Court Summon">Court Summon</option>
+      <option value="Lost Document">Lost Document</option>
+    </select>
+
+    <label>Ad Content</label>
+    <div style="position:relative;">
+      <textarea id="content" placeholder="Type the notice content here..."></textarea>
+      <div style="position:absolute; top:8px; right:8px; display:flex; flex-direction:column; align-items:center; gap:2px; background:#fff; padding:2px; border-radius:4px;">
+        <button type="button" class="btn-icon" id="uploadImgBtn" title="Upload image, PDF, or Word file to extract text"
+          style="width:32px; height:32px; font-size:1rem;">📷</button>
+        <span style="font-family:Arial, sans-serif; font-size:.65rem; color:var(--muted);">Upload</span>
+        <select id="ocrLangSelect" style="font-size:.62rem; padding:2px; width:82px; border:1px solid var(--line); border-radius:3px;">
+          <option value="eng">English</option>
+          <option value="hin">Hindi</option>
+          <option value="pan">Punjabi</option>
+          <option value="ben">Bengali</option>
+          <option value="guj">Gujarati</option>
+          <option value="tam">Tamil</option>
+          <option value="tel">Telugu</option>
+          <option value="kan">Kannada</option>
+          <option value="mal">Malayalam</option>
+          <option value="ori">Odia</option>
+          <option value="ara">Arabic</option>
+          <option value="chi_sim">Chinese</option>
+          <option value="jpn">Japanese</option>
+          <option value="kor">Korean</option>
+        </select>
+      </div>
+      <input type="file" id="imgFileInput" accept="image/*,.pdf,.docx,.txt" style="display:none;">
+    </div>
+    <div class="status" id="ocrStatus"></div>
+
+    <div class="admin-row" style="margin-top:8px; align-items:center;">
+      <div style="display:flex; gap:6px; align-items:center;">
+        <span class="tool-label" style="white-space:nowrap;">Translate to:</span>
+        <select id="translateLangSelect" style="font-size:.78rem; padding:5px 6px; border:1px solid var(--line); border-radius:3px; flex:1;">
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="pa">Punjabi</option>
+          <option value="bn">Bengali</option>
+          <option value="gu">Gujarati</option>
+          <option value="ta">Tamil</option>
+          <option value="te">Telugu</option>
+          <option value="kn">Kannada</option>
+          <option value="ml">Malayalam</option>
+          <option value="or">Odia</option>
+          <option value="ar">Arabic</option>
+          <option value="zh-CN">Chinese</option>
+          <option value="ja">Japanese</option>
+          <option value="ko">Korean</option>
+        </select>
+      </div>
+      <button type="button" class="btn secondary" id="translateBtn" style="padding:8px 14px;">🌐 Translate</button>
+    </div>
+    <div class="status" id="translateStatus"></div>
+
+    <label>Size <span style="font-weight:normal; text-transform:none; color:#999;">(auto-filled from content — you can edit)</span></label>
+    <div class="admin-row">
+      <div><label>Width (cm)</label><input type="text" id="manualW"></div>
+      <div><label>Height (cm)</label><input type="text" id="manualH"></div>
+    </div>
+    <div class="note" id="resetSizeLink" style="cursor:pointer; text-decoration:underline; display:none;">Reset to suggested size</div>
+
+    <div id="calcSection" style="display:none;">
+      <div class="rate-box" id="calcBox"></div>
+    </div>
+
+    <div class="admin-row">
+      <div>
+        <label>Customer Name</label>
+        <input type="text" id="custName">
+      </div>
+      <div>
+        <label>Contact No</label>
+        <input type="tel" id="custPhone">
+      </div>
+    </div>
+    <label>Email ID</label>
+    <input type="email" id="custEmail">
+
+    <button class="btn" id="genBtn" disabled>Generate Rate & Artwork</button>
+    <div class="status" id="genStatus"></div>
+  </div>
+
+  <div class="card" id="resultCard" style="display:none;">
+    <div class="rate-box" id="rateBox"></div>
+
+    <div class="artwork-editor-wrap">
+      <div class="artwork" id="artworkBox"></div>
+
+      <div class="artwork-toolbar" id="artworkToolbar">
+        <div class="tool-row">
+          <button type="button" class="btn-icon-sm" id="toolBold" title="Bold">B</button>
+          <span class="tool-label">Bold Text</span>
+        </div>
+        <div class="tool-row">
+          <span class="btn-icon-sm" style="background:transparent; color:var(--accent); border:1px solid var(--accent); font-size:.85rem;">Aa</span>
+          <select id="optFont" class="tool-select"></select>
+        </div>
+        <div class="tool-row">
+          <span class="btn-icon-sm" style="background:transparent; color:var(--accent); border:1px solid var(--accent); font-size:.68rem;">H-Size</span>
+          <select id="optHeadSize" class="tool-select"></select>
+        </div>
+        <div class="tool-row">
+          <span class="btn-icon-sm" style="background:transparent; color:var(--accent); border:1px solid var(--accent); font-size:.68rem;">C-Size</span>
+          <select id="optSize" class="tool-select"></select>
+        </div>
+        <div class="tool-row">
+          <input type="color" id="optHeadColor" value="#ffffff" class="btn-icon-sm" style="padding:0; border:1px solid var(--line);">
+          <span class="tool-label">Heading Text Colour</span>
+        </div>
+        <div class="tool-row">
+          <input type="color" id="optHeadBg" value="#000000" class="btn-icon-sm" style="padding:0; border:1px solid var(--line);">
+          <span class="tool-label">Heading Background</span>
+        </div>
+        <div class="tool-row">
+          <input type="color" id="optBodyColor" value="#1c1c1c" class="btn-icon-sm" style="padding:0; border:1px solid var(--line);">
+          <span class="tool-label">Content Text Colour</span>
+        </div>
+        <div class="tool-row">
+          <input type="color" id="optBodyBg" value="#ffffff" class="btn-icon-sm" style="padding:0; border:1px solid var(--line);">
+          <span class="tool-label">Content Background</span>
+        </div>
+        <div class="tool-row">
+          <input type="color" id="optBorderColor" value="#000000" class="btn-icon-sm" style="padding:0; border:1px solid var(--line);">
+          <span class="tool-label">Border Colour</span>
+        </div>
+        <div class="tool-row" style="align-items:flex-start;">
+          <span class="btn-icon-sm" style="background:transparent; color:var(--accent); border:1px solid var(--accent); font-size:.6rem;">Border</span>
+          <div style="flex:1;">
+            <input type="range" id="optBorderWidth" min="0" max="10" value="2" style="width:100%;">
+            <span class="tool-label" id="borderWidthLabel">Border Width: 2px</span>
+            <input type="range" id="optBorderOpacity" min="0" max="100" value="0" style="width:100%; margin-top:6px;">
+            <span class="tool-label" id="borderOpacityLabel">Border Transparency: 0%</span>
+          </div>
+        </div>
+        <div class="tool-row">
+          <button type="button" class="btn-icon-sm" id="toolReset" title="Reset to Normal">↺</button>
+          <span class="tool-label">Back to Normal</span>
+        </div>
+        <div class="note" id="langDetectNote" style="margin-top:2px;"></div>
+        <div class="note" style="margin-top:2px;">Tip: you can click directly into the artwork text below and type to edit it.</div>
+      </div>
+    </div>
+
+    <button class="btn" id="downloadBtn" style="display:block; margin-top:18px;">⬇ Download Ad Design</button>
+    <button class="btn secondary" id="resetBtn">New Request</button>
+    <div class="status" id="saveStatus"></div>
+  </div>
+
+  <details>
+    <summary>Admin: Add a rate temporarily (not saved to your Google Sheet)</summary>
+    <div class="card" style="margin-top:10px;">
+      <div class="note" style="margin-bottom:10px;">Rates now come from your Google Sheet. Anything added here is temporary — it will disappear next time someone refreshes rates. To add a rate permanently, add it in the Google Sheet instead.</div>
+      <div class="admin-row">
+        <div><label>Newspaper</label><input type="text" id="admPub"></div>
+        <div><label>City</label><input type="text" id="admCity"></div>
+      </div>
+      <div class="admin-row">
+        <div><label>Public Notice — Rate (per sq.cm)</label><input type="text" id="admPN"></div>
+        <div><label>Court Summon — Rate (per sq.cm)</label><input type="text" id="admCS"></div>
+      </div>
+      <label>Lost Document — Rate (per sq.cm)</label>
+      <input type="text" id="admLD" style="max-width:200px;">
+      <button class="btn" id="admSaveBtn">Add Rate Row</button>
+      <div class="status" id="admStatus"></div>
+    </div>
+  </details>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
