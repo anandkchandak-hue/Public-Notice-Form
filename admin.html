@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Template Manager — Backend</title>
+<link rel="stylesheet" href="admin-style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Cormorant+Garamond&family=Merriweather&family=Great+Vibes&family=Dancing+Script&family=Montserrat&display=swap" rel="stylesheet">
+<style>
+/* Multi-field zone editor */
+#textZoneBoxes .zone-box{position:absolute;}
+.zone-box .zone-tag{
+  position:absolute; top:-17px; left:-1px; background:#2e7d32; color:#fff;
+  font-family:Arial,sans-serif; font-size:.6rem; padding:1px 5px; white-space:nowrap; line-height:1.5;
+}
+.zone-box.is-active{outline:2px dashed #b8912f; outline-offset:1px;}
+#fieldList{margin-top:14px;}
+.field-item{border:1px solid var(--line,#ddd); border-radius:4px; padding:10px; margin-bottom:8px; background:#fafafa;}
+.field-item.is-active{border-color:#b8912f;}
+.field-head{display:flex; align-items:center; gap:8px; cursor:pointer;}
+.field-head .idx{
+  background:#2e7d32; color:#fff; border-radius:50%; width:20px; height:20px;
+  display:flex; align-items:center; justify-content:center; font-size:.68rem; flex:none;
+}
+.field-head .nm{flex:1; font-family:Arial,sans-serif; font-size:.82rem; font-weight:bold;}
+.field-head .rm{background:none; border:none; color:#b3352f; cursor:pointer; font-size:.75rem;}
+.field-body{display:none; margin-top:9px;}
+.field-item.is-active .field-body{display:block;}
+.field-body label{margin-top:8px !important;}
+.field-body .admin-row{gap:10px;}
+.field-empty{font-family:Arial,sans-serif; font-size:.78rem; color:#888; padding:6px 0;}
+</style>
+</head>
+<body>
+
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <h1>🗂 Obituary Template Manager</h1>
+    <p class="sub" style="margin:0;">Upload and manage your real design templates — used by the "View More Designs" gallery on the customer booking page.</p>
+  </div>
+</div>
+
+
+<div class="wrap">
+  <div class="status" id="fbStatus"></div>
+
+  <div class="card">
+    <h2>Add a New Template</h2>
+
+    <label>GitHub Personal Access Token <span style="font-weight:normal; text-transform:none; color:#999;">(used to upload images to your repo — never saved to any file)</span></label>
+    <input type="password" id="githubToken" placeholder="Paste your token here">
+    <div style="display:flex; align-items:center; gap:6px; margin-top:6px;">
+      <input type="checkbox" id="rememberTokenCheck" style="width:auto;">
+
+      <label style="margin:0; text-transform:none; font-size:.75rem;" for="rememberTokenCheck">Remember on this device (stored only in this browser)</label>
+    </div>
+
+    <label>Template Name</label>
+    <input type="text" id="tplName" placeholder="e.g. Royal Blue Frame">
+
+    <div class="admin-row">
+      <div>
+        <label>City</label>
+        <input type="text" id="tplCity" placeholder="e.g. Hyderabad">
+      </div>
+      <div>
+        <label>Publication</label>
+        <input type="text" id="tplPublication" placeholder="e.g. Times of India">
+      </div>
+    </div>
+
+    <label>Language</label>
+    <select id="tplLanguage">
+      <option value="English">English</option>
+      <option value="Hindi">Hindi</option>
+      <option value="Punjabi">Punjabi</option>
+      <option value="Bengali">Bengali</option>
+      <option value="Gujarati">Gujarati</option>
+      <option value="Tamil">Tamil</option>
+      <option value="Telugu">Telugu</option>
+      <option value="Kannada">Kannada</option>
+      <option value="Malayalam">Malayalam</option>
+      <option value="Odia">Odia</option>
+      <option value="Arabic">Arabic</option>
+      <option value="Chinese">Chinese</option>
+      <option value="Japanese">Japanese</option>
+      <option value="Korean">Korean</option>
+      <option value="Any">Any / Not language-specific</option>
+    </select>
+
+    <label>Obituary Type</label>
+    <select id="tplCategory">
+      <option value="Any">Any</option>
+      <option value="Obituary Ad">Obituary Ad</option>
+      <option value="1st Year Anniversary">1st Year Anniversary</option>
+      <option value="Memorial Ad">Memorial Ad</option>
+      <option value="Death Announcement">Death Announcement</option>
+    </select>
+
+    <label style="margin-top:20px;">Default Text Style</label>
+    <div class="zone-instructions">Every new text field starts with these settings. You can change any individual field afterwards — useful when the name is large and red but the address is small and dark.</div>
+    <div class="admin-row">
+      <div>
+        <label>Font</label>
+        <select id="tplFont">
+          <option value="'Playfair Display', Georgia, serif">Playfair Display (elegant serif)</option>
+          <option value="Georgia, 'Times New Roman', serif">Georgia / Times (classic serif)</option>
+          <option value="'Cormorant Garamond', Georgia, serif">Cormorant Garamond (refined serif)</option>
+          <option value="'Merriweather', Georgia, serif">Merriweather (readable serif)</option>
+          <option value="'Great Vibes', cursive">Great Vibes (elegant script)</option>
+          <option value="'Dancing Script', cursive">Dancing Script (flowing script)</option>
+          <option value="Arial, sans-serif">Arial (clean sans-serif)</option>
+          <option value="'Montserrat', Arial, sans-serif">Montserrat (modern sans-serif)</option>
+        </select>
+      </div>
+      <div>
+        <label>Text Colour</label>
+        <input type="text" id="tplTextColor" placeholder="#333333" value="#333333">
+      </div>
+    </div>
+    <div class="admin-row">
+      <div>
+        <label>Text Alignment</label>
+        <select id="tplTextAlign">
+          <option value="center">Center</option>
+          <option value="left">Left</option>
+        </select>
+      </div>
+      <div>
+        <label>Base Text Size (pt)</label>
+        <input type="text" id="tplTextSize" placeholder="e.g. 8" value="8">
+      </div>
+    </div>
+
+    <label style="margin-top:20px;">Cover the Original Sample Content</label>
+    <div class="zone-instructions">Pick the exact background colour of your design (e.g. the cream/green shade behind the sample text). This paints over the original photo and text completely, so the customer's real photo and content look like they were always part of the design — not pasted on top of the sample.</div>
+    <div class="admin-row">
+      <div>
+        <label>Photo Zone Background</label>
+        <input type="text" id="tplPhotoZoneBg" placeholder="#e8e4d8" value="#e8e4d8">
+      </div>
+      <div>
+        <label>Text Zone Background</label>
+        <input type="text" id="tplTextZoneBg" placeholder="#e8e4d8" value="#e8e4d8">
+      </div>
+    </div>
+
+    <label>Template Image (high resolution)</label>
+    <input type="file" id="tplFile" accept="image/*">
+
+    <div id="zoneSection" style="display:none;">
+      <label style="margin-top:16px;">Mark where the Photo and each detail should appear</label>
+      <div class="zone-instructions">
+        Click "Draw Photo Zone", then drag a box on the image where the person's photo goes.
+        Then, for <em>every separate piece of writing</em> in your design — the name, the date of
+        passing, the event details, the firm name, the address, the note — click "Add Text Field"
+        and drag a box over it. Name each one so the customer knows what to type there.
+      </div>
+      <div class="zone-buttons">
+        <button type="button" class="btn secondary" id="drawPhotoZoneBtn">📷 Draw Photo Zone</button>
+        <button type="button" class="btn secondary" id="addTextFieldBtn">📝 Add Text Field</button>
+        <button type="button" class="btn secondary" id="clearZonesBtn">✕ Clear All</button>
+      </div>
+      <div class="zone-preview-container" id="zonePreviewContainer">
+        <img id="zonePreviewImg" src="" alt="Template preview">
+        <div class="zone-box zone-photo" id="photoZoneBox" style="display:none;"></div>
+        <div id="textZoneBoxes"></div>
+        <div class="zone-box zone-text" id="drawingBox" style="display:none;"></div>
+      </div>
+      <div class="zone-status" id="zoneStatus">No zones drawn yet.</div>
+      <div id="fieldList"></div>
+    </div>
+
+    <button class="btn" id="saveTemplateBtn" style="margin-top:16px;" disabled>Save Template</button>
+    <div class="status" id="saveStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>Existing Templates</h2>
+    <div class="status" id="loadStatus"></div>
+    <div class="template-grid" id="templateGrid"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="admin-script.js"></script>
+</body>
+</html>
