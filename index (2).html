@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Book an Obituary Ad</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="site-header">
+  <div class="site-header-inner">
+    <div class="site-logo">Obituary Ad Booking</div>
+  </div>
+  <div class="wizard-banner">
+    <div class="step-indicator">
+      <div class="step-circle active" id="stepCircle1">
+        <div class="circle-num-row">
+          <span class="circle-num">1</span>
+          <div class="step-underline"></div>
+        </div>
+        <div class="circle-label">TARGET<small>City, Publication, Category, Date</small></div>
+      </div>
+      <div class="step-circle" id="stepCircle2">
+        <div class="circle-num-row">
+          <span class="circle-num">2</span>
+          <div class="step-underline"></div>
+        </div>
+        <div class="circle-label">COMPOSE<small>Content, Photo, Design</small></div>
+      </div>
+      <div class="step-circle" id="stepCircle3">
+        <div class="circle-num-row">
+          <span class="circle-num">3</span>
+          <div class="step-underline"></div>
+        </div>
+        <div class="circle-label">PAY<small>Review & Submit</small></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="wrap">
+  <div class="status" id="sheetStatus" style="margin-bottom:10px;"></div>
+
+  <!-- ============ STEP 1: TARGET ============ -->
+  <div class="step-panel" id="stepPanel1">
+    <div class="card" id="formCard" style="padding-top:0;">
+      <div class="mini-tabs" style="display:none;">
+        <div class="mini-tab active" id="miniTabBtnCategory" data-tab="category" style="display:none;">CATEGORY</div>
+        <div class="mini-tab" id="miniTabBtnPublish" data-tab="publish" style="display:none;">WHERE TO PUBLISH</div>
+        <div class="mini-tab" id="miniTabBtnDate" data-tab="date" style="display:none;">SELECT DATE</div>
+      </div>
+
+      <div class="selection-summary" id="selectionSummary" style="display:none;">
+        <div>
+          <div class="summary-label">You have selected</div>
+          <div class="summary-detail" id="selectionSummaryText">—</div>
+        </div>
+      </div>
+
+      <div class="mini-tab-content" id="miniTabCategory">
+        <select id="catSelect" style="display:none;">
+          <option value="Obituary" selected>Obituary</option>
+        </select>
+
+        <div id="obituaryTypeRow">
+          <label>Obituary Type</label>
+          <select id="obituaryTypeSelect">
+            <option value="Obituary Ad">Obituary Ad</option>
+            <option value="1st Year Anniversary">1st Year Anniversary</option>
+            <option value="Memorial Ad">Memorial Ad</option>
+            <option value="Death Announcement">Death Announcement</option>
+          </select>
+        </div>
+        <button type="button" class="btn" id="miniTabToPublishBtn" style="display:none;">Next: Where to Publish →</button>
+      </div>
+
+      <div class="mini-tab-content" id="miniTabPublish">
+        <label>City</label>
+        <div class="dropdown">
+          <input type="text" id="cityInput" placeholder="Type or select a city..." autocomplete="off">
+          <div class="dropdown-list" id="cityList"></div>
+        </div>
+
+        <label>Publication</label>
+        <select id="pubSelect"><option value="">Select city first</option></select>
+        <button type="button" class="btn" id="miniTabToDateBtn" style="display:none;">Next: Select Date →</button>
+      </div>
+
+      <div class="mini-tab-content" id="miniTabDate">
+        <label>Date</label>
+        <div class="mini-calendar" id="miniCalendar">
+          <div class="mini-calendar-header">
+            <button type="button" id="calPrevBtn" class="cal-nav-btn">‹</button>
+            <span id="calMonthLabel"></span>
+            <button type="button" id="calNextBtn" class="cal-nav-btn">›</button>
+          </div>
+          <div class="mini-calendar-grid" id="calGrid"></div>
+        </div>
+        <button class="btn wizard-next" id="toStep2Btn">Next: Compose Ad →</button>
+      </div>
+
+      <div class="status" id="step1Status"></div>
+    </div>
+  </div>
+
+  <!-- ============ STEP 2: COMPOSE ============ -->
+  <div class="step-panel" id="stepPanel2" style="display:none;">
+    <div class="card">
+      <h2 class="step-heading">Write the Obituary</h2>
+
+      <label>Ad Content</label>
+      <div style="position:relative;">
+        <textarea id="content" placeholder="Type the notice content here..."></textarea>
+        <div id="ocrUploadCorner" style="position:absolute; top:8px; right:8px; display:flex; flex-direction:column; align-items:center; gap:2px; background:#fff; padding:2px; border-radius:4px;">
+          <button type="button" class="btn-icon" id="uploadImgBtn" title="Upload image, PDF, or Word file to extract text"
+            style="width:32px; height:32px; font-size:1rem;">📷</button>
+          <span style="font-family:Arial, sans-serif; font-size:.65rem; color:var(--muted);">Upload</span>
+          <select id="ocrLangSelect" style="font-size:.62rem; padding:2px; width:82px; border:1px solid var(--line); border-radius:3px;">
+            <option value="eng">English</option>
+            <option value="hin">Hindi</option>
+            <option value="pan">Punjabi</option>
+            <option value="ben">Bengali</option>
+            <option value="guj">Gujarati</option>
+            <option value="tam">Tamil</option>
+            <option value="tel">Telugu</option>
+            <option value="kan">Kannada</option>
+            <option value="mal">Malayalam</option>
+            <option value="ori">Odia</option>
+            <option value="ara">Arabic</option>
+            <option value="chi_sim">Chinese</option>
+            <option value="jpn">Japanese</option>
+            <option value="kor">Korean</option>
+          </select>
+        </div>
+        <input type="file" id="imgFileInput" accept="image/*,.pdf,.docx,.txt" style="display:none;">
+      </div>
+      <div class="status" id="ocrStatus"></div>
+
+      <div id="obituaryUploadSection" style="display:none;">
+        <label>Photo of the Person</label>
+        <div class="admin-row" style="align-items:center;">
+          <button type="button" class="btn secondary" id="obituaryPhotoBtn">📷 Upload Photo</button>
+          <div id="obituaryPhotoPreviewWrap" style="display:none;">
+            <img id="obituaryPhotoPreview" src="" alt="Photo preview" style="width:50px; height:50px; object-fit:cover; border-radius:50%; border:2px solid var(--line);">
+          </div>
+        </div>
+        <input type="file" id="obituaryPhotoInput" accept="image/*" style="display:none;">
+
+        <label style="margin-top:14px;">Already Have a Finished Design?</label>
+        <button type="button" class="btn secondary" id="obituaryDesignUploadBtn">⬆ Upload Ready-made Design (skip templates, just get a rate)</button>
+        <input type="file" id="obituaryDesignFileInput" accept="image/*" style="display:none;">
+        <div class="status" id="obituaryDesignUploadStatus"></div>
+      </div>
+
+      <div id="translateRow" style="display:none;">
+        <div class="admin-row" style="margin-top:8px; align-items:center;">
+          <div style="display:flex; gap:6px; align-items:center;">
+            <span class="tool-label" style="white-space:nowrap;">Translate to:</span>
+            <select id="translateLangSelect" style="font-size:.78rem; padding:5px 6px; border:1px solid var(--line); border-radius:3px; flex:1;">
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
+              <option value="pa">Punjabi</option>
+              <option value="bn">Bengali</option>
+              <option value="gu">Gujarati</option>
+              <option value="ta">Tamil</option>
+              <option value="te">Telugu</option>
+              <option value="kn">Kannada</option>
+              <option value="ml">Malayalam</option>
+              <option value="or">Odia</option>
+              <option value="ar">Arabic</option>
+              <option value="zh-CN">Chinese</option>
+              <option value="ja">Japanese</option>
+              <option value="ko">Korean</option>
+            </select>
+          </div>
+          <button type="button" class="btn secondary" id="translateBtn" style="padding:8px 14px;">🌐 Translate</button>
+        </div>
+        <div class="status" id="translateStatus"></div>
+      </div>
+
+      <details id="sizeAdvancedDetails">
+        <summary style="cursor:pointer; font-family:Arial, sans-serif; font-size:.82rem; color:var(--muted);">Advanced: adjust exact size (optional)</summary>
+        <div class="admin-row" id="manualSizeRow" style="margin-top:10px;">
+          <div><label>Width (cm)</label><input type="text" id="manualW"></div>
+          <div><label>Height (cm)</label><input type="text" id="manualH"></div>
+        </div>
+        <div class="note" id="resetSizeLink" style="cursor:pointer; text-decoration:underline; display:none;">Reset to suggested size</div>
+      </details>
+
+      <div id="obituarySizeSection" style="display:none;">
+        <label>Choose a size</label>
+        <div class="sizes" id="obituarySizeOptions"></div>
+      </div>
+
+      <div id="calcSection" style="display:none;">
+        <div class="rate-box" id="calcBox"></div>
+      </div>
+
+      <button class="btn" id="genBtn" disabled>Generate Rate & Artwork</button>
+      <div class="status" id="genStatus"></div>
+    </div>
+
+    <div class="card" id="resultCard" style="display:none;">
+      <div class="rate-box" id="rateBox"></div>
+
+      <div class="artwork-editor-wrap">
+        <div class="artwork" id="artworkBox"></div>
+
+        <div class="artwork-toolbar" id="artworkToolbar">
+          <div class="tool-row" id="galleryDesignRow" style="display:none;">
+            <button type="button" class="btn-icon-sm" id="viewDesignsBtn" title="View More Designs">🎨</button>
+            <span class="tool-label">View More Designs</span>
+          </div>
+
+          <details id="customizeDesignDetails">
+            <summary style="cursor:pointer; font-family:Arial, sans-serif; font-size:.82rem; color:var(--muted); margin:6px 0;">Customize design (optional)</summary>
+            <div style="margin-top:10px;">
+              <div class="tool-row">
+                <button type="button" class="btn-icon-sm" id="toolBold" title="Bold">B</button>
+                <span class="tool-label">Bold Text</span>
+              </div>
+              <div class="tool-row">
+                <button type="button" class="btn-icon-sm" id="selectionIncreaseBtn" title="Increase size of selected text">A+</button>
+                <button type="button" class="btn-icon-sm" id="selectionDecreaseBtn" title="Decrease size of selected text" style="margin-left:4px;">A−</button>
+                <span class="tool-label" style="margin-left:6px;">Resize Selected Text</span>
+              </div>
+              <div class="tool-row">
+                <span class="btn-icon-sm" style="background:transparent; color:var(--accent); border:1px solid var(--accent); font-size:.85rem;">Aa</span>
+                <select id="optFont" class="tool-select"></select>
+              </div>
+              <div class="tool-row">
+                <span class="btn-icon-sm" style="background:transparent; color:var(--accent); border:1px solid var(--accent); font-size:.68rem;">H-Size</span>
+                <select id="optHeadSize" class="tool-select"></select>
+              </div>
+              <div class="tool-row">
+                <span class="btn-icon-sm" style="background:transparent; color:var(--accent); border:1px solid var(--accent); font-size:.68rem;">C-Size</span>
+                <select id="optSize" class="tool-select"></select>
+              </div>
+              <div class="tool-row">
+                <input type="color" id="optHeadColor" value="#ffffff" class="btn-icon-sm" style="padding:0; border:1px solid var(--line);">
+                <span class="tool-label">Heading Text Colour</span>
+              </div>
+              <div class="tool-row">
+                <input type="color" id="optHeadBg" value="#000000" class="btn-icon-sm" style="padding:0; border:1px solid var(--line);">
+                <span class="tool-label">Heading Background</span>
+              </div>
+              <div class="tool-row">
+                <input type="color" id="optBodyColor" value="#1c1c1c" class="btn-icon-sm" style="padding:0; border:1px solid var(--line);">
+                <span class="tool-label">Content Text Colour</span>
+              </div>
+              <div class="tool-row">
+                <input type="color" id="optBodyBg" value="#ffffff" class="btn-icon-sm" style="padding:0; border:1px solid var(--line);">
+                <span class="tool-label">Content Background</span>
+              </div>
+              <div class="tool-row">
+                <input type="color" id="optBorderColor" value="#000000" class="btn-icon-sm" style="padding:0; border:1px solid var(--line);">
+                <span class="tool-label">Border Colour</span>
+              </div>
+              <div class="tool-row" style="align-items:flex-start;">
+                <span class="btn-icon-sm" style="background:transparent; color:var(--accent); border:1px solid var(--accent); font-size:.6rem;">Border</span>
+                <div style="flex:1;">
+                  <input type="range" id="optBorderWidth" min="0" max="10" value="2" style="width:100%;">
+                  <span class="tool-label" id="borderWidthLabel">Border Width: 2px</span>
+                  <input type="range" id="optBorderOpacity" min="0" max="100" value="0" style="width:100%; margin-top:6px;">
+                  <span class="tool-label" id="borderOpacityLabel">Border Transparency: 0%</span>
+                </div>
+              </div>
+              <div class="tool-row">
+                <button type="button" class="btn-icon-sm" id="toolReset" title="Reset to Normal">↺</button>
+                <span class="tool-label">Back to Normal</span>
+              </div>
+              <div class="note" id="langDetectNote" style="margin-top:2px;"></div>
+              <div class="note" style="margin-top:2px;">Tip: you can click directly into the artwork text below and type to edit it.</div>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <button class="btn" id="downloadBtn" style="display:block; margin-top:18px;">⬇ Download Ad Design</button>
+      <div class="status" id="saveStatus"></div>
+
+      <div class="wizard-nav">
+        <button class="btn secondary" id="backToStep1Btn">← Back</button>
+        <button class="btn wizard-next" id="toStep3Btn">Next: Payment →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ STEP 3: PAY ============ -->
+  <div class="step-panel" id="stepPanel3" style="display:none;">
+    <div class="card">
+      <h2 class="step-heading">Review & Submit</h2>
+      <div class="rate-box" id="finalRateBox"></div>
+
+      <label>Customer Name</label>
+      <input type="text" id="custName">
+      <label>Contact No</label>
+      <input type="tel" id="custPhone">
+      <label>Email ID</label>
+      <input type="email" id="custEmail">
+
+      <button class="btn" id="payBtn" style="margin-top:16px;">Proceed to Payment</button>
+      <div class="status" id="payStatus"></div>
+
+      <div class="wizard-nav">
+        <button class="btn secondary" id="backToStep2Btn">← Back</button>
+        <button class="btn secondary" id="resetBtn">Start a New Order</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:20px;">
+    <button class="btn-icon" id="clearBtn" title="Clear Form" aria-label="Clear Form">🗑</button>
+  </div>
+
+  <!-- Staff-only tools: kept in the page for internal use, hidden from the normal customer flow -->
+  <div style="display:none;" id="staffOnlySection">
+    <button class="btn secondary" id="refreshBtn">Refresh Rates from Sheet</button>
+    <details>
+      <summary>Admin: Add a rate temporarily (not saved to your Google Sheet)</summary>
+      <div class="card" style="margin-top:10px;">
+        <div class="note" style="margin-bottom:10px;">Rates now come from your Google Sheet. Anything added here is temporary — it will disappear next time someone refreshes rates. To add a rate permanently, add it in the Google Sheet instead.</div>
+        <div class="admin-row">
+          <div><label>Newspaper</label><input type="text" id="admPub"></div>
+          <div><label>City</label><input type="text" id="admCity"></div>
+        </div>
+        <div class="admin-row">
+          <div><label>Public Notice — Rate (per sq.cm)</label><input type="text" id="admPN"></div>
+          <div><label>Court Summon — Rate (per sq.cm)</label><input type="text" id="admCS"></div>
+        </div>
+        <div class="admin-row">
+          <div><label>Lost Document — Rate (per sq.cm)</label><input type="text" id="admLD"></div>
+          <div><label>Obituary — Rate (per sq.cm)</label><input type="text" id="admOB"></div>
+        </div>
+        <button class="btn" id="admSaveBtn">Add Rate Row</button>
+        <div class="status" id="admStatus"></div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
